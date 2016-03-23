@@ -8,7 +8,7 @@ InputStreamByteWrapper.class
 MatlabServer.m
 # Misc
 extras/
-test/test_data/ouput
+test/test_data/output
 #Packrat
 packrat/lib*/
 packrat/src/
