@@ -1,0 +1,14 @@
+# R
+.RData
+.Rhistory
+.Rproj.user
+
+# Matlab
+InputStreamByteWrapper.class
+MatlabServer.m
+# Misc
+extras/
+test/test_data/ouput
+#Packrat
+packrat/lib*/
+packrat/src/
