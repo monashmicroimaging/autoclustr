@@ -68,6 +68,7 @@ Settings are located at the bottom of `autoclustr.R` script.
 | :-------- | :---------- |
 | **Input settings** ||
 | `project_dir` | Path to the project directory |
+| `localisation_file_hdrs` | Column headers for the RapidStorm localisation file |
 | `roi_xy_pix_size` | Pixel size calibration for the ROIs i.e., the x/y pixel size of the image on which the ROIs were drawn. |
 | **Output settings** ||
 | `output_dir_name` | Name for the output directory. This will be created inside the `project_dir` if it does not exist. |
