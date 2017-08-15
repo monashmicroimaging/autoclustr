@@ -99,7 +99,7 @@ load_rois <- function(rois_dir) {
 
 apply_rois <- function(points, rois) {
   p <- mapply(function(sample, points, rois) {
-    roi_indexes <- grep(sample, do.call(rbind, str_split(names(rois), "_"))[,1])
+    roi_indexes <- which(do.call(rbind, str_split(names(rois), "_"))[,1] %in% sample)
     lapply(roi_indexes, function(index, points, rois) {
       points[rois[[index]]]
     }, points, rois)
@@ -107,12 +107,10 @@ apply_rois <- function(points, rois) {
 
   p <- if (length(p) > 1) do.call(c, p) else p[[1]]
   names(p) <- names(rois)
-  mapply(
-    function(name, points) {
-      if(npoints(points) < 100) warning(paste("Low number of localisations in ROI: ", name, ". Are you should you configured the correct xy pixel size?", sep = ""))
-    },
-    names(rois),
-    p)
+  for (i in 1:length(p)) {
+    name <- names(p)[i]
+    if (npoints(p[[i]]) < 100) warning(paste("Low number of localisations in ROI: ", name, ". Are you should you configured the correct xy pixel size?", sep = ""))
+  }
   p
 }
 
@@ -296,6 +294,9 @@ process_dir <- function(input_dir, output_dir_name,
   # Match PPPs and ROIs, then apply the ROIs to each PPP.
   setTxtProgressBar(pb, 0.2, title = "Applying ROIs")
   points <- apply_rois(ppps, rois)
+  excl <- lapply(points, npoints) == 0
+  lapply(names(points)[excl], function(n) warning(paste(n, " has been exclude because the ROI contained 0 localisations")))
+  points <- points[!excl]
 
   # Calculate L-function and peak r values
   setTxtProgressBar(pb, 0.3, title = "Calculating global L-function")
