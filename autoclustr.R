@@ -540,7 +540,7 @@ localisation_file_hdrs <- c("x", "y", "frame", "amplitude", "chisq", "bkgd")
 # localisation_file_hdrs <- c("x", "precision_x", "y", "precision_y", "frame", "amplitude", "chisq", "bkgd")
 
 ## ROI pixel size calibration
-roi_xy_pix_size <- 10
+roi_xy_pix_size <- 5
 
 #-------------------------------------------------------------------------
 # Output Settings
