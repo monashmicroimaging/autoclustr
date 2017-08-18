@@ -518,14 +518,26 @@ process_dir <- function(input_dir, output_dir_name,
 
   # Finally save R workspace
   setTxtProgressBar(pb, 0.95, title = "Saving R environment.")
-  base::save(ppps, points, points_lest, points_lest_peak, imgs, cluster_masks,
-             cluster_labels, cluster_labels_edges, cluster_points, cluster_density,
-             cluster_in_prop, cluster_pwd, cluster_nndist, mean_cluster_areas,
-             mean_cluster_diameters, lpeaks, cluster_heatmap_xy_pix_size,
-             cluster_heatmap_xy_pix_size, exclude_small_objects, global_k_correction,
-             local_l_radius, min_degree_clustering, min_object_size, roi_xy_pix_size,
-             split_min_r, split_min_r_correction_factor, split_min_threshold,
-             split_min_r_correction_factor, use_global_k_peak, file = file.path(output_dir, "output_data.RData"))
+  if (split_clumped_clusters)
+    base::save(ppps, points, points_lest, points_lest_peak, imgs, cluster_masks,
+               cluster_labels, cluster_labels_edges, cluster_points, cluster_density,
+               cluster_in_prop, cluster_pwd, cluster_nndist, mean_cluster_areas,
+               mean_cluster_diameters, lpeaks, cluster_heatmap_xy_pix_size,
+               cluster_heatmap_xy_pix_size, exclude_small_objects, global_k_correction,
+               local_l_radius, min_degree_clustering, min_object_size, roi_xy_pix_size,
+               split_min_r, split_min_r_correction_factor, split_min_threshold,
+               split_min_r_correction_factor, use_global_k_peak, file = file.path(output_dir, "output_data.RData"))
+  else
+    base::save(ppps, points, points_lest, points_lest_peak, imgs, cluster_masks,
+               cluster_labels, cluster_labels_edges, cluster_points, cluster_density,
+               cluster_in_prop, cluster_pwd, cluster_nndist, mean_cluster_areas,
+               mean_cluster_diameters, cluster_heatmap_xy_pix_size,
+               cluster_heatmap_xy_pix_size, exclude_small_objects, global_k_correction,
+               local_l_radius, min_degree_clustering, min_object_size, roi_xy_pix_size,
+               split_min_r_correction_factor,
+               split_min_r_correction_factor, use_global_k_peak, file = file.path(output_dir, "output_data.RData"))
+
+
   setTxtProgressBar(pb, 1)
 }
 
