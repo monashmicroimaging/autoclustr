@@ -38,6 +38,11 @@ accept <- function(ext) {
   }
 }
 
+savemask <- function(mask, path) {
+  mask <- if (!is.mask(mask)) as.mask(mask) else mask
+  save.image(im2cimg(as.im(mask, na.replace = 0)), file = path)
+}
+
 peaks <- function(series, span = 3) {
   z <- embed(series, span)
   s <- span%/%2
@@ -442,45 +447,32 @@ process_dir <- function(input_dir, output_dir_name,
                             width = 3+1, height = max(3 * aspect_ratio(as.rectangle(im)), 2),
                             units="in", dpi = 300), names(imgs), imgs)
 
-  if (!file.exists(file.path(output_dir, "masks")))
-    dir.create(file.path(output_dir, "masks"))
-  Map(function(n, mask) ggsave(paste(tools::file_path_sans_ext(n), "_mask.pdf", sep=""), plot_mask(mask),
-                             path = file.path(output_dir, "masks"),
-                             width = 3+1, height = max(3 * aspect_ratio(as.rectangle(mask)), 2),
-                             units="in", dpi = 300), names(cluster_masks), cluster_masks)
+  mask_dir <- file.path(output_dir, "masks")
+  if (!file.exists(mask_dir))
+    dir.create(mask_dir)
+  Map(savemask, mask = cluster_masks, path = file.path(mask_dir, paste(tools::file_path_sans_ext(names(cluster_masks)), "_mask.tif", sep = "")))
 
-  if (!file.exists(file.path(output_dir, "masks")))
-    dir.create(file.path(output_dir, "masks"))
   Map(function(n, points, mask) ggsave(paste(tools::file_path_sans_ext(n), "_points_mask.pdf", sep=""),
                                        plot_points_masks_bw(points, mask),
                                path = file.path(output_dir, "masks"),
                                width = 3+1, height = max(3 * aspect_ratio(as.rectangle(mask)), 2),
                                units="in", dpi = 300), names(cluster_masks), points, cluster_masks)
 
-  if (!file.exists(file.path(output_dir, "filtered_masks")))
-    dir.create(file.path(output_dir, "filtered_masks"))
-  Map(function(n, mask) ggsave(paste(tools::file_path_sans_ext(n), "_fmask.pdf", sep=""), plot_mask(as.mask(mask)),
-                               path = file.path(output_dir, "filtered_masks"),
-                               width = 3+1, height = max(3 * aspect_ratio(as.rectangle(mask)), 2),
-                               units="in", dpi = 300), names(cluster_labels), cluster_labels)
+  filtered_mask_dir <- file.path(output_dir, "filtered_masks")
+  if (!file.exists(filtered_mask_dir))
+    dir.create(filtered_mask_dir)
+  Map(savemask, mask = cluster_labels, file.path(filtered_mask_dir, paste(tools::file_path_sans_ext(names(cluster_labels)), "_fmask.tif", sep = "")))
 
-  if (!file.exists(file.path(output_dir, "filtered_masks")))
-    dir.create(file.path(output_dir, "filtered_masks"))
   Map(function(n, points, labels) ggsave(paste(tools::file_path_sans_ext(n), "_points_filtered_mask.pdf", sep=""),
                                        plot_points_masks_bw(points, as.mask(labels)),
                                        path = file.path(output_dir, "filtered_masks"),
                                        width = 3+1, height = max(3 * aspect_ratio(as.rectangle(labels)), 2),
                                        units="in", dpi = 300), names(cluster_masks), points, cluster_labels)
 
-  if (!file.exists(file.path(output_dir, "edge_filtered_masks")))
-    dir.create(file.path(output_dir, "edge_filtered_masks"))
-  Map(function(n, mask) ggsave(paste(tools::file_path_sans_ext(n), "_efmask.pdf", sep=""), plot_mask(as.mask(mask)),
-                               path = file.path(output_dir, "edge_filtered_masks"),
-                               width = 3+1, height = max(3 * aspect_ratio(as.rectangle(mask)), 2),
-                               units="in", dpi = 300), names(cluster_labels_edges), cluster_labels_edges)
-
-  if (!file.exists(file.path(output_dir, "edge_filtered_masks")))
-    dir.create(file.path(output_dir, "edge_filtered_masks"))
+  edge_filtered_mask_dir <- file.path(output_dir, "edge_filtered_masks")
+  if (!file.exists(edge_filtered_mask_dir))
+    dir.create(edge_filtered_mask_dir)
+  Map(savemask, mask = cluster_labels_edges, file.path(edge_filtered_mask_dir, paste(tools::file_path_sans_ext(names(cluster_labels_edges)), "_efmask.tif", sep = "")))
   Map(function(n, points, labels) ggsave(paste(tools::file_path_sans_ext(n), "_points_efmask.pdf", sep=""),
                                        plot_points_masks_bw(points, as.mask(labels)),
                                        path = file.path(output_dir, "edge_filtered_masks"),
